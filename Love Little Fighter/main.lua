@@ -5,31 +5,43 @@ setting_height_default = 600
 __KeyboardUse = {}
 
 --Required Files
+require("library/lua_enhance")
 require("base_character")
 
 
 function love.load()
-	love.window.setMode(setting_width_default, setting_height_default, nil)
 	x = 0
-	y = setting_height_default * 0.5
-	direct = 1
+	love.window.setMode(setting_width_default, setting_height_default, nil)
+	love.graphics.setBackgroundColor(1, 0, 0, 1)
+	local a = Character:New(0, {x=250,y=100})
+	local b = Character:New(1, {x=150,y=5,healthRegen=100000})
+	local c = Character:New(0, {x=400,y=300})
+	print(c, b, a)
 end
 
 function love.draw(d)
-	--love.graphics.print(text, x, y, r, sx, sy, ox, oy, kx, ky)
-	--[[love.graphics.draw(__CharacterInfo[0].avatar, 0, 0)
-	love.graphics.draw(__CharacterInfo[0].ui_avatar, 400, 300)]]
-	love.graphics.draw(__CharacterInfo[0].ui_avatar, x, y, nil, -1, 1)
+	Character:Kernel_DrawAllCharacters()
 end
 
 function love.update(d)
-	if __KeyboardUse["space"] then
-		x = x + d * __CharacterInfo[0].info.walkSpeed
-	end
+
 end
 
 function love.keypressed(key)
 	__KeyboardUse[key] = true
+	if __KeyboardUse["z"] then
+		Character:Spawn(1, iFrame)
+	elseif __KeyboardUse["x"] then
+		Character:Spawn(2, 20)
+	elseif __KeyboardUse["c"] then
+		Character:Spawn(3, 40)
+	elseif __KeyboardUse["v"] then
+		Character:Hide(1)
+	elseif __KeyboardUse["b"] then
+		Character:Hide(2)
+	elseif __KeyboardUse["n"] then
+		Character:Hide(3)
+	end
 end
 
 function love.keyreleased(key)
