@@ -1,9 +1,11 @@
 --Base include
-require ("global_var")
-
---Required Files
 require("library/lua_enhance")
+require("global_var")
+
+require("system_loading")
+--Required Files
 require("base_character")
+
 
 
 function love.load()
@@ -17,7 +19,7 @@ function love.draw(d)
 end
 
 function love.update(d)
-
+	Loading:Draw(d)
 end
 
 function love.keypressed(key)

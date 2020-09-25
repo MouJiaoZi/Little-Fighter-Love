@@ -2,6 +2,9 @@
 setting_width_default = 800
 setting_height_default = 600
 
+--Loading stuff
+SYSTEM_IS_LOADING = false
+
 --Key Bind
 --enum
 KEY_UP = 1
