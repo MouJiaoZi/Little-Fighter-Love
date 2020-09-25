@@ -58,13 +58,13 @@ end
 LoadCharacter(64, "character_test", "script/character_test")
 ]]
 function Character:LoadCharacter(iID, sClassName, sFile)
-	if not sClassName or not sFile or not iID or type(sClassName) ~= "string" or type(sFile) ~= "string" or type(iID) ~= "number" or math.floor(iID) ~= math.ceil(iID) then
+	if not sClassName or not sFile or not iID or not IsType("string", sClassName, sFile) or not IsInt(iID) then
 		error("[Error]LoadCharacter(int ID, string ClassName, string File without .lua).")
 		return false
 	end
 	require(sFile)
 	local character_class = loadstring("return "..sClassName)()
-	if type(character_class) ~= "table" then
+	if not IsType("table", character_class) then
 		error("[Error]LoadCharacter(): no such class found.")
 		return false
 	end
@@ -159,11 +159,12 @@ require("data_chrarcter")
 local LFF_OBJECT_CHARACTER = {}
 for i=0, #__CharacterInfo do
 	LFF_OBJECT_CHARACTER[i] = {}
+	LFF_OBJECT_CHARACTER[i].player = 0 -- who can control this character, PlayerID from 1 to 4, 0 = AI
 	LFF_OBJECT_CHARACTER[i].isHidden = true
 	LFF_OBJECT_CHARACTER[i].isDead = false
-	LFF_OBJECT_CHARACTER[i].team = 0  --0 = neutral
+	LFF_OBJECT_CHARACTER[i].team = 0  --0 = neutral, -1 = enemy in stage mode, 0 - 8 in versus mode, 1 or 2 in war mode
 	LFF_OBJECT_CHARACTER[i].frame = 1
-	LFF_OBJECT_CHARACTER[i].index = -1
+	LFF_OBJECT_CHARACTER[i].index = 0 -- index starts at 1, <= 0 means nothing
 	LFF_OBJECT_CHARACTER[i].id = i
 	LFF_OBJECT_CHARACTER[i].state = LFF_CHARACTER_STATE_STAND
 	LFF_OBJECT_CHARACTER[i].x = 0
@@ -219,7 +220,7 @@ function Character:New(iID, info)
 
 	local obj = {}
 	obj.id = iID
-	if type(info) == "table" then
+	if IsType("table", info) then
 		for k, v in pairs(info) do
 			obj[k] = v
 		end
@@ -235,7 +236,7 @@ Spawn a character, makes it visible
 ]]
 function Character:Spawn(iIndex, iFrame)
 	if LFF_OBJECT_CHARACTER_LIST[iIndex] then
-		if type(iFrame) == "number" and iFrame > 0 then
+		if IsInt(iFrame) then
 			LFF_OBJECT_CHARACTER_LIST[iIndex].frame = iFrame
 		end
 		LFF_OBJECT_CHARACTER_LIST[iIndex].isHidden = false
@@ -270,10 +271,34 @@ function Character:Destroy(iIndex)
 end
 
 --[[
+Which team the character belongs to, 0 = neutral, -1 = enemy in stage mode, 0 - 8 in versus mode, 1 or 2 in war mode
+]]
+function Character:SetTeam(iIndex, iTeam)
+	if LFF_OBJECT_CHARACTER_LIST[iIndex] and IsInt(iTeam) and iTeam >= -1 then
+		LFF_OBJECT_CHARACTER_LIST[iIndex].team = iTeam
+		return true
+	else
+		return false
+	end
+end
+
+--[[
+Who can control this character, PlayerID from 1 to 4, 0 = AI
+]]
+function Character:SetPlayer(iIndex, iPlayerID)
+	if LFF_OBJECT_CHARACTER_LIST[iIndex] and IsInt(iPlayerID) and iPlayerID >= 0 then
+		LFF_OBJECT_CHARACTER_LIST[iIndex].player = iPlayerID
+		return true
+	else
+		return false
+	end
+end
+
+--[[
 Set the given character's origin, may stuck the character
 ]]
 function Character:SetAbsOrigin(iIndex, x, y, h)
-	if LFF_OBJECT_CHARACTER_LIST[iIndex] then
+	if LFF_OBJECT_CHARACTER_LIST[iIndex] and IsType("number", x, y, h) then
 		LFF_OBJECT_CHARACTER_LIST[iIndex].x = x or LFF_OBJECT_CHARACTER_LIST[iIndex].x
 		LFF_OBJECT_CHARACTER_LIST[iIndex].y = y or LFF_OBJECT_CHARACTER_LIST[iIndex].y
 		LFF_OBJECT_CHARACTER_LIST[iIndex].h = h or LFF_OBJECT_CHARACTER_LIST[iIndex].h
@@ -282,6 +307,7 @@ function Character:SetAbsOrigin(iIndex, x, y, h)
 		return false
 	end
 end
+
 function printlist()
 	for k, v in pairs(LFF_OBJECT_CHARACTER_LIST) do
 		print(k, v.id)
