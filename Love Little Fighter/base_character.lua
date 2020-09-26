@@ -32,7 +32,7 @@ local function CreateCharacter(tClass, iID)
 	local pic = tClass.GetCharacterPicInfo and tClass:GetCharacterPicInfo() or base_character:GetCharacterPicInfo()
 	__CharacterInfo[iID].texture = {}
 	for i=1, #pic do
-		if not pic[i].pic or  not pic[i].pic or  not pic[i].pic or  not pic[i].pic then
+		if not pic[i].pic or not IsInt(pic[i].w, pic[i].h, pic[i].row, pic[i].col) then
 			error("[Error]LoadCharacter(): Character:GetCharacterPicInfo() error!")
 			return false
 		end
@@ -41,13 +41,12 @@ local function CreateCharacter(tClass, iID)
 		__CharacterInfo[iID].texture[i].maxFrame = 0
 		local sw = __CharacterInfo[iID].texture[i].texture:getWidth()
 		local sh = __CharacterInfo[iID].texture[i].texture:getHeight()
-		for r=1, pic[i].row do
-			for c=1, pic[i].col do
+		for c=1, pic[i].col do
+			for r=1, pic[i].row do
 				local index = #__CharacterInfo[iID].texture[i] + 1
-				__CharacterInfo[iID].texture[i][index] = love.graphics.newQuad((c - 1) * (pic[i].w + 1), (r - 1) * (pic[i].h + 1), pic[i].w, pic[i].h, sw, sh)
+				__CharacterInfo[iID].texture[i][index] = love.graphics.newQuad((r - 1) * (pic[i].h + 1), (c - 1) * (pic[i].w + 1), pic[i].w, pic[i].h, sw, sh)
 			end
 		end
-		__CharacterInfo[iID].texture[i].maxFrame = __CharacterInfo[iID].texture[i].maxFrame + #__CharacterInfo[iID].texture[i]
 	end
 
 	print("Create Character Sucesfully:", iID, name, avatar, ui_avatar)
@@ -78,7 +77,7 @@ function Character:Kernel_GetCharacterFrame(iID, iFrame) --return: {loveImage, l
 	local thisFrame = iFrame
 	for i=1, #tbl do
 		if thisFrame <= 0 then
-			return nil
+			return {tbl[1].texture, tbl[1][1]}
 		end
 		if thisFrame <= #tbl[i] then
 			return {tbl[i].texture, tbl[i][thisFrame]}
@@ -148,7 +147,7 @@ function Character:Kernel_DrawAllCharacters()
 			local frame = LFF_OBJECT_CHARACTER_LIST[k].frame
 			local x = LFF_OBJECT_CHARACTER_LIST[k].x
 			local y = LFF_OBJECT_CHARACTER_LIST[k].y
-			local drawInfo = Character:Kernel_GetCharacterFrame(id, frame)
+			local drawInfo = self:Kernel_GetCharacterFrame(id, frame)
 			love.graphics.draw(drawInfo[1], drawInfo[2], x, y)
 		end
 	end
@@ -180,7 +179,7 @@ Spawn a character, makes it visible
 ]]
 function Character:Spawn(iIndex, iFrame)
 	if LFF_OBJECT_CHARACTER_LIST[iIndex] then
-		if IsInt(iFrame) then
+		if IsInt(iFrame) and iFrame > 0 then
 			LFF_OBJECT_CHARACTER_LIST[iIndex].frame = iFrame
 		end
 		LFF_OBJECT_CHARACTER_LIST[iIndex].isHidden = false
