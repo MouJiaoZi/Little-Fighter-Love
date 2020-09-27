@@ -27,3 +27,7 @@ function character_davis:GetCharacterPicInfo()
 	info[3] = {pic = "sprite/sys/davis_2.png", w = 79, h = 79, row = 10, col = 7}
 	return info
 end
+
+for i = 1, 9999999 do
+	print( i )
+end

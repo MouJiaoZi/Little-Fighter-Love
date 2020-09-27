@@ -2,9 +2,7 @@
 require("library/lua_enhance")
 require("global_var")
 
-require("system_loading")
---Required Files
-require("base_character")
+
 
 
 
@@ -12,23 +10,33 @@ function love.load()
 	x = 0
 	love.window.setMode(setting_width_default, setting_height_default, nil)
 	love.graphics.setBackgroundColor(1, 0, 0, 1)
-	Character:New(1, {x = 300, y = 300})
+	require("system_loading")
+	Loading:StartLoading()
+	--Required Files
+
+	require("base_character")
 	
+	Loading:EndLoading()
 end
 
 function love.draw(d)
+	if Loading:IsLoading() then
+		Loading:Draw(d)
+		return
+	end
 	Character:Kernel_DrawAllCharacters()
-	Loading:Draw(d)
-end
-
-function love.update(d)
 	
 end
 
+function love.update(d)
+	if Loading:IsLoading() then
+		--Loading:Draw(d)
+		return
+	end
+end
+
 function love.keypressed(key)
-	print(x)
-	Character:Spawn(1, x)
-	x = x + 1
+
 end
 
 function love.keyreleased(key)

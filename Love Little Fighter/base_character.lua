@@ -70,8 +70,6 @@ function Character:LoadCharacter(iID, sClassName, sFile)
 	CreateCharacter(character_class, iID)
 end
 
-require("data_chrarcter")
-
 function Character:Kernel_GetCharacterFrame(iID, iFrame) --return: {loveImage, loveQuad}
 	local tbl = __CharacterInfo[iID].texture
 	local thisFrame = iFrame
@@ -100,41 +98,44 @@ LFF_CHARACTER_STATE_RUN = 3
 
 --[[Character enum]]
 local LFF_OBJECT_CHARACTER = {}
-for i=0, #__CharacterInfo do
-	LFF_OBJECT_CHARACTER[i] = {}
-	LFF_OBJECT_CHARACTER[i].player = 0 -- who can control this character, PlayerID from 1 to 4, 0 = AI
-	LFF_OBJECT_CHARACTER[i].isHidden = true
-	LFF_OBJECT_CHARACTER[i].isDead = false
-	LFF_OBJECT_CHARACTER[i].team = 0  --0 = neutral, -1 = enemy in stage mode, 0 - 8 in versus mode, 1 or 2 in war mode
-	LFF_OBJECT_CHARACTER[i].frame = 1
-	LFF_OBJECT_CHARACTER[i].index = 0 -- index starts at 1, <= 0 means nothing
-	LFF_OBJECT_CHARACTER[i].id = i
-	LFF_OBJECT_CHARACTER[i].state = LFF_CHARACTER_STATE_STAND
-	LFF_OBJECT_CHARACTER[i].x = 0
-	LFF_OBJECT_CHARACTER[i].y = 0
-	LFF_OBJECT_CHARACTER[i].h = 0
-	LFF_OBJECT_CHARACTER[i].fightMaxHealth = __CharacterInfo[i].info.maxHealth
-	LFF_OBJECT_CHARACTER[i].maxHealth = __CharacterInfo[i].info.maxHealth
-	LFF_OBJECT_CHARACTER[i].health = LFF_OBJECT_CHARACTER[i].fightMaxHealth
-	LFF_OBJECT_CHARACTER[i].maxMana = __CharacterInfo[i].info.maxMana
-	LFF_OBJECT_CHARACTER[i].mana = LFF_OBJECT_CHARACTER[i].maxMana
-	LFF_OBJECT_CHARACTER[i].walkSpeed = __CharacterInfo[i].info.walkSpeed
-	LFF_OBJECT_CHARACTER[i].walkSpeedZ = __CharacterInfo[i].info.walkSpeedZ
-	LFF_OBJECT_CHARACTER[i].runSpeed = __CharacterInfo[i].info.runSpeed
-	LFF_OBJECT_CHARACTER[i].runSpeedZ = __CharacterInfo[i].info.runSpeedZ
-	LFF_OBJECT_CHARACTER[i].heavyWalkSpeed = __CharacterInfo[i].info.heavyWalkSpeed
-	LFF_OBJECT_CHARACTER[i].heavyWalkSpeedZ = __CharacterInfo[i].info.heavyWalkSpeedZ
-	LFF_OBJECT_CHARACTER[i].heavyRunSpeed = __CharacterInfo[i].info.heavyRunSpeed
-	LFF_OBJECT_CHARACTER[i].heavyRunSpeedZ = __CharacterInfo[i].info.heavyRunSpeedZ
-	LFF_OBJECT_CHARACTER[i].jumpHeight = __CharacterInfo[i].info.jumpHeight
-	LFF_OBJECT_CHARACTER[i].jumpDistance = __CharacterInfo[i].info.jumpDistance
-	LFF_OBJECT_CHARACTER[i].jumpDistanceZ = __CharacterInfo[i].info.jumpDistanceZ
-	LFF_OBJECT_CHARACTER[i].dashHeight = __CharacterInfo[i].info.dashHeight
-	LFF_OBJECT_CHARACTER[i].dashDistance = __CharacterInfo[i].info.dashDistance
-	LFF_OBJECT_CHARACTER[i].dashDistanceZ = __CharacterInfo[i].info.dashDistanceZ
-	LFF_OBJECT_CHARACTER[i].rowingHeight = __CharacterInfo[i].info.rowingHeight
-	LFF_OBJECT_CHARACTER[i].rowingDistance = __CharacterInfo[i].info.rowingDistance
-	LFF_OBJECT_CHARACTER[i].__index = LFF_OBJECT_CHARACTER[i]
+
+function Character:Kernel_SetCharacterInfo()
+	for i=0, #__CharacterInfo do
+		LFF_OBJECT_CHARACTER[i] = {}
+		LFF_OBJECT_CHARACTER[i].player = 0 -- who can control this character, PlayerID from 1 to 4, 0 = AI
+		LFF_OBJECT_CHARACTER[i].isHidden = true
+		LFF_OBJECT_CHARACTER[i].isDead = false
+		LFF_OBJECT_CHARACTER[i].team = 0  --0 = neutral, -1 = enemy in stage mode, 0 - 8 in versus mode, 1 or 2 in war mode
+		LFF_OBJECT_CHARACTER[i].frame = 1
+		LFF_OBJECT_CHARACTER[i].index = 0 -- index starts at 1, <= 0 means nothing
+		LFF_OBJECT_CHARACTER[i].id = i
+		LFF_OBJECT_CHARACTER[i].state = LFF_CHARACTER_STATE_STAND
+		LFF_OBJECT_CHARACTER[i].x = 0
+		LFF_OBJECT_CHARACTER[i].y = 0
+		LFF_OBJECT_CHARACTER[i].h = 0
+		LFF_OBJECT_CHARACTER[i].fightMaxHealth = __CharacterInfo[i].info.maxHealth
+		LFF_OBJECT_CHARACTER[i].maxHealth = __CharacterInfo[i].info.maxHealth
+		LFF_OBJECT_CHARACTER[i].health = LFF_OBJECT_CHARACTER[i].fightMaxHealth
+		LFF_OBJECT_CHARACTER[i].maxMana = __CharacterInfo[i].info.maxMana
+		LFF_OBJECT_CHARACTER[i].mana = LFF_OBJECT_CHARACTER[i].maxMana
+		LFF_OBJECT_CHARACTER[i].walkSpeed = __CharacterInfo[i].info.walkSpeed
+		LFF_OBJECT_CHARACTER[i].walkSpeedZ = __CharacterInfo[i].info.walkSpeedZ
+		LFF_OBJECT_CHARACTER[i].runSpeed = __CharacterInfo[i].info.runSpeed
+		LFF_OBJECT_CHARACTER[i].runSpeedZ = __CharacterInfo[i].info.runSpeedZ
+		LFF_OBJECT_CHARACTER[i].heavyWalkSpeed = __CharacterInfo[i].info.heavyWalkSpeed
+		LFF_OBJECT_CHARACTER[i].heavyWalkSpeedZ = __CharacterInfo[i].info.heavyWalkSpeedZ
+		LFF_OBJECT_CHARACTER[i].heavyRunSpeed = __CharacterInfo[i].info.heavyRunSpeed
+		LFF_OBJECT_CHARACTER[i].heavyRunSpeedZ = __CharacterInfo[i].info.heavyRunSpeedZ
+		LFF_OBJECT_CHARACTER[i].jumpHeight = __CharacterInfo[i].info.jumpHeight
+		LFF_OBJECT_CHARACTER[i].jumpDistance = __CharacterInfo[i].info.jumpDistance
+		LFF_OBJECT_CHARACTER[i].jumpDistanceZ = __CharacterInfo[i].info.jumpDistanceZ
+		LFF_OBJECT_CHARACTER[i].dashHeight = __CharacterInfo[i].info.dashHeight
+		LFF_OBJECT_CHARACTER[i].dashDistance = __CharacterInfo[i].info.dashDistance
+		LFF_OBJECT_CHARACTER[i].dashDistanceZ = __CharacterInfo[i].info.dashDistanceZ
+		LFF_OBJECT_CHARACTER[i].rowingHeight = __CharacterInfo[i].info.rowingHeight
+		LFF_OBJECT_CHARACTER[i].rowingDistance = __CharacterInfo[i].info.rowingDistance
+		LFF_OBJECT_CHARACTER[i].__index = LFF_OBJECT_CHARACTER[i]
+	end
 end
 LFF_OBJECT_CHARACTER.__index = LFF_OBJECT_CHARACTER
 
@@ -256,3 +257,6 @@ function printlist()
 		print(k, v.id)
 	end
 end
+
+
+local loadfiles = loadfiles or require("data_chrarcter")
