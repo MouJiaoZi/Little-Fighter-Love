@@ -85,6 +85,8 @@ function Character:Kernel_GetCharacterFrame(iID, iFrame) --return: {loveImage, l
 	end
 end
 
+require("data_chrarcter")
+
 -----------------------------------------------
 -----------------------------------------------
 -----------------------------------------------
@@ -99,7 +101,7 @@ LFF_CHARACTER_STATE_RUN = 3
 --[[Character enum]]
 local LFF_OBJECT_CHARACTER = {}
 
-function Character:Kernel_SetCharacterInfo()
+--function Character:Kernel_SetCharacterInfo()
 	for i=0, #__CharacterInfo do
 		LFF_OBJECT_CHARACTER[i] = {}
 		LFF_OBJECT_CHARACTER[i].player = 0 -- who can control this character, PlayerID from 1 to 4, 0 = AI
@@ -136,7 +138,7 @@ function Character:Kernel_SetCharacterInfo()
 		LFF_OBJECT_CHARACTER[i].rowingDistance = __CharacterInfo[i].info.rowingDistance
 		LFF_OBJECT_CHARACTER[i].__index = LFF_OBJECT_CHARACTER[i]
 	end
-end
+--end
 LFF_OBJECT_CHARACTER.__index = LFF_OBJECT_CHARACTER
 
 local LFF_OBJECT_CHARACTER_LIST = {}
@@ -150,6 +152,60 @@ function Character:Kernel_DrawAllCharacters()
 			local y = LFF_OBJECT_CHARACTER_LIST[k].y
 			local drawInfo = self:Kernel_GetCharacterFrame(id, frame)
 			love.graphics.draw(drawInfo[1], drawInfo[2], x, y)
+		end
+	end
+end
+
+function Character:Kernel_Update(d)
+	for i=1, 4 do
+		if self:GetIndexByPlayerID(i) > 0 then
+			local chara = LFF_OBJECT_CHARACTER_LIST[self:GetIndexByPlayerID(i)]
+			if not chara.isHidden then
+				local pressed = 0
+				if love.keyboard.isDown(__PLAYER_KEY_SETTINGS[i][KEY_UP]) then
+					pressed = pressed + KEY_UP
+				end
+				if love.keyboard.isDown(__PLAYER_KEY_SETTINGS[i][KEY_DOWN]) then
+					pressed = pressed + KEY_DOWN
+				end
+				if love.keyboard.isDown(__PLAYER_KEY_SETTINGS[i][KEY_LEFT]) then
+					pressed = pressed + KEY_LEFT
+				end
+				if love.keyboard.isDown(__PLAYER_KEY_SETTINGS[i][KEY_RIGHT]) then
+					pressed = pressed + KEY_RIGHT
+				end
+				if love.keyboard.isDown(__PLAYER_KEY_SETTINGS[i][KEY_ATTACK]) then
+					--
+				end
+				if love.keyboard.isDown(__PLAYER_KEY_SETTINGS[i][KEY_JUMP]) then
+					--
+				end
+				if love.keyboard.isDown(__PLAYER_KEY_SETTINGS[i][KEY_DEFEND]) then
+					--
+				end
+
+				if bit.band(pressed, KEY_UP) > 0 then
+					chara.y = chara.y - d * chara.walkSpeedZ
+				end
+				if bit.band(pressed, KEY_DOWN) > 0 then
+					chara.y = chara.y + d * chara.walkSpeedZ
+				end
+				if bit.band(pressed, KEY_LEFT) > 0 then
+					chara.x = chara.x - d * chara.walkSpeed
+				end
+				if bit.band(pressed, KEY_RIGHT) > 0 then
+					chara.x = chara.x + d * chara.walkSpeed
+				end
+				if bit.band(pressed, KEY_ATTACK) > 0 then
+					--
+				end
+				if bit.band(pressed, KEY_JUMP) > 0 then
+					--
+				end
+				if bit.band(pressed, KEY_DEFEND) > 0 then
+					--
+				end
+			end
 		end
 	end
 end
@@ -238,6 +294,15 @@ function Character:SetPlayer(iIndex, iPlayerID)
 	end
 end
 
+function Character:GetIndexByPlayerID(iPlayerID)
+	for k, v in pairs(LFF_OBJECT_CHARACTER_LIST) do
+		if v.player == iPlayerID then
+			return k 
+		end
+	end
+	return -1
+end
+
 --[[
 Set the given character's origin, may stuck the character
 ]]
@@ -257,6 +322,3 @@ function printlist()
 		print(k, v.id)
 	end
 end
-
-
-local loadfiles = loadfiles or require("data_chrarcter")

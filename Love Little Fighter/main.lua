@@ -1,38 +1,35 @@
 --Base include
 require("library/lua_enhance")
 require("global_var")
+require("gameplay")
+require("base_character")
 
 
 
 
 
 function love.load()
-	x = 0
 	love.window.setMode(setting_width_default, setting_height_default, nil)
 	love.graphics.setBackgroundColor(1, 0, 0, 1)
-	require("system_loading")
-	Loading:StartLoading()
-	--Required Files
-
-	require("base_character")
-	
-	Loading:EndLoading()
+	local a = Character:New(1, {x = 400, y = 300})
+	Character:SetPlayer(a, 1)
+	Character:Spawn(a, 22)
 end
 
-function love.draw(d)
-	if Loading:IsLoading() then
-		Loading:Draw(d)
+function love.draw()
+	--[[if Loading:IsLoading() then
+		Loading:Draw()
 		return
-	end
+	end]]
 	Character:Kernel_DrawAllCharacters()
-	
 end
 
 function love.update(d)
-	if Loading:IsLoading() then
+	--[[if Loading:IsLoading() then
 		--Loading:Draw(d)
 		return
-	end
+	end]]
+	GamePlay:Update(d)
 end
 
 function love.keypressed(key)
@@ -41,5 +38,5 @@ end
 
 function love.keyreleased(key)
 
-	print("Key:", key)
+	--print("Key:", key)
 end
