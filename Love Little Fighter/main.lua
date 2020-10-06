@@ -11,7 +11,7 @@ require("base_character")
 function love.load()
 	love.window.setMode(setting_width_default, setting_height_default, nil)
 	love.graphics.setBackgroundColor(1, 0, 0, 1)
-	local a = Character:New(1, {x = 400, y = 300})
+	local a = Character:New(0, {x = 400, y = 300})
 	Character:SetPlayer(a, 1)
 	Character:Spawn(a, 22)
 end
